@@ -1,3 +1,6 @@
+export type LineChartData = { date: string; count: number; }[]
+export type PieChartData = { key: string; name: string; value: number; }[]
+
 export type Comments = {
     count?:number;
     list:{
@@ -16,20 +19,5 @@ export type Comments = {
         complaint?:number; //举报数
     }[];
 }
-
-export type Messages = {
-    count?:number;
-    list:{
-        id:number;
-        user: {
-            id:string | number;
-            name:string;
-            avatar:string;
-        }
-        content:string; //内容
-        moment:string; //时间
-    }[];
-}
-
 export type CommentData = Comments['list'][0];
-export type MessageData = Messages['list'][0];
+

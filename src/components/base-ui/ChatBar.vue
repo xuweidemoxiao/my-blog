@@ -14,7 +14,7 @@
                     <ScrollArea class="">
                         <ul class="list-none p-3 m-0">
   
-                            <li v-for="(item, index) in messageList" :key="item.id">
+                            <li v-for="(item, index) in sortedMessageList" :key="item.id">
                                 <a v-ripple class="flex items-center cursor-pointer px-3 rounded-border text-surface-700 dark:text-surface-100 hover:bg-surface-100 dark:hover:bg-surface-700 duration-150 transition-colors p-ripple">
                                     <MessageItem :messageData="item" @delete="handleDelete" />
                                     <span class="flex items-center justify-center ml-auto bg-primary text-primary-contrast rounded-full text-sm" style="min-width: 1.4rem; height: 1.4rem">2</span>
@@ -37,22 +37,21 @@
 
 <script setup lang="ts">
 import Drawer from 'primevue/drawer';
-import { messageMock } from '@/mock/overviewMock.ts';
 import MessageItem from './MessageItem.vue';
 import { Times } from '@primeicons/vue';
 import ScrollArea from './ScrollArea.vue';
-import { ref } from 'vue';
+import { useMainStore } from '@/stores/modules/main.ts';
+import { storeToRefs } from 'pinia';
 
-const messageList = ref(messageMock.data.list.sort((a, b) => new Date(b.moment).getTime() - new Date(a.moment).getTime()));
+const mainStore = useMainStore();
+const { sortedMessageList } = storeToRefs(mainStore);
 
 let visible = defineModel<boolean>('visible', {
     default: false,
 })
 
 const handleDelete = (id: number) => {
-    messageMock.data.list = messageMock.data.list.filter(item => item.id !== id);
-    messageList.value = messageMock.data.list;
-    messageMock.data.count--;
+    mainStore.deleteMessage(id);
 }
 
 </script>

@@ -4,16 +4,17 @@ import { overviewMenu } from '@/global/overview';
 import Plus from '@primeicons/vue/plus';
 import { Button } from 'primevue';
 import { lineChartMock, menuMock, pieChartMock, commentMock } from '@/mock/overviewMock';
-import LineChart from '@/components/over-view/LineChart.vue';
-import PieChart from '@/components/over-view/PieChart.vue';
-import Comment from '@/components/over-view/Comment.vue';
-import DataCard from '@/components/over-view/DataCard.vue';
-import type { Comments } from '@/types/index.ts';
+import LineChart from '@/components/Overview/LineChart.vue';
+import PieChart from '@/components/Overview/PieChart.vue';
+import Comment from '@/components/Overview/Comment.vue';
+import DataCard from '@/components/Overview/DataCard.vue';
+import type { Comments, LineChartData, PieChartData } from '@/types/index.ts';
+
 
 const overviewItems = ref([...overviewMenu]);
-const lineChartData = ref<{ date: string; count: number; }[]>([...lineChartMock.data.slice(0, 7)]);
-const pieDeviceData = ref<{ key: string; name: string; value: number; }[]>([...pieChartMock.data.device]);
-const pieWebsiteData = ref<{ key: string; name: string; value: number; }[]>([...pieChartMock.data.website]);
+const lineChartData = ref<LineChartData>([...lineChartMock.data.slice(0, 7)]);
+const pieDeviceData = ref<PieChartData>([...pieChartMock.data.device]);
+const pieWebsiteData = ref<PieChartData>([...pieChartMock.data.website]);
 commentMock.data.list = commentMock.data.list.sort((a, b) => new Date(b.moment).getTime() - new Date(a.moment).getTime());
 const commentList = ref<Comments>({...commentMock.data, list: commentMock.data.list.slice(0, 10)});
 
@@ -65,9 +66,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="px-4">
-    
-    <div class="grid grid-cols-4 gap-4 py-2  ">
+  <div class="px-4 py-2">
+    <div class="grid grid-cols-4 gap-4  ">
       <div 
         v-for="(item, index) in overviewItems" 
         :key="item.name" 

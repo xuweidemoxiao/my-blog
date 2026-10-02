@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import ChatBar from './components/base-ui/ChatBar.vue';
 import MenuBar from './components/base-ui/MenuBar.vue';
 import NavBar from './components/base-ui/NavBar.vue';
+import { useMainStore } from './stores/modules/main';
+import { groupMock, messageMock } from './mock/overviewMock.ts';
 
 const chatBarVisible = ref(false);
+
+onMounted(() => {
+  const mainStore = useMainStore();
+  mainStore.groupList = groupMock.data;
+  mainStore.messageList = messageMock.data;
+});
 </script>
 
 <template>

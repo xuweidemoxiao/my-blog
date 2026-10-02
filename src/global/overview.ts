@@ -15,22 +15,22 @@ export const menuIcon = [
     {
         name: '本地文件',
         icon: File,
-        path: '/about',
+        path: '/file',
     },
     {
         name: '博客文章',
         icon: Book,
-        path: '/blog-article',
+        path: '/article',
     },
     {
         name: '摄影图库',
         icon: Camera,
-        path: '/photo-gallery',
+        path: '/gallery',
     },
     {
         name: '随笔随记',
         icon: Pencil,
-        path: '/blog-post',
+        path: '/diary',
     },
     {
         name: '设置',
