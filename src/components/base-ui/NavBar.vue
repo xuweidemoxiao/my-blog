@@ -4,20 +4,19 @@ import Envelope from '@primeicons/vue/envelope';
 import Moon from '@primeicons/vue/moon';
 import Sun from '@primeicons/vue/sun';
 import { Button, Avatar } from 'primevue';
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useThemeStore } from '@/stores/modules/theme';
 
 const router = useRouter();
 const emit = defineEmits(['update:visible']);
-const isDark = ref(false);
+const themeStore = useThemeStore();
 
 const handleChatBarClick = () => {
   emit('update:visible', true);
 }
 
 const toggleDarkMode = () => {
-  isDark.value = !isDark.value;
-  document.documentElement.classList.toggle('my-app-dark', isDark.value);
+  themeStore.toggle();
 }
 </script>
 
@@ -40,7 +39,7 @@ const toggleDarkMode = () => {
         <Envelope :size="18" class="text-gray-500 hover:" @click="handleChatBarClick" />
       </OverlayBadge>
       <div @click="toggleDarkMode" class="p-0.5 rounded-md hover:bg-gray-300 dark:hover:bg-gray-700" >
-        <Moon v-if="isDark" :size="18" class="text-gray-500"/>
+        <Moon v-if="themeStore.isDark" :size="18" class="text-gray-500"/>
         <Sun v-else :size="18" class="text-gray-500" />
       </div>
       <Avatar image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" size="medium" shape="circle" />
