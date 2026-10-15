@@ -35,6 +35,7 @@ import type {
   ComposeOption,
 } from 'echarts/core';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import type { PieChartData } from '@/types/modules/overView';
 
 // 通过 ComposeOption 来组合出一个只有必须组件和图表的 Option 类型
 type ECOption = ComposeOption<
@@ -65,7 +66,7 @@ echarts.use([
 ]);
 
 const props = defineProps<{
-    data: { key: string; name: string; value: number; }[];
+    data: PieChartData;
     chartHeight: string;
     type: string;
 }>()

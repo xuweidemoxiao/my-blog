@@ -31,6 +31,7 @@ import type {
   ComposeOption,
 } from 'echarts/core';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import type { LineChartData } from '@/types/modules/overView';
 
 // 通过 ComposeOption 来组合出一个只有必须组件和图表的 Option 类型
 type ECOption = ComposeOption<
@@ -57,7 +58,7 @@ echarts.use([
 ]);
 
 const props = defineProps<{
-    data: { date: string; count: number; }[];
+    data: LineChartData;
     chartHeight: string;
 }>()
 

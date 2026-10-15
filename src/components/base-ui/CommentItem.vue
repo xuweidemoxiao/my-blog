@@ -6,7 +6,7 @@
                 <span class="text-muted-color text-sm">{{ commentData.user.name }}</span>
                 <span class="text-color font-semibold py-1">{{ commentData.content }}</span>
                 <span class="text-muted-color text-xs tabular-nums">
-                    {{ commentData.moment }}
+                    {{ formatRelativeTime(commentData.moment) }}
                     <span class="text-muted-color text-xs hover:underline ml-2">举报</span>
                 </span>
             </div>
@@ -21,6 +21,7 @@ import Avatar from 'primevue/avatar';
 import Divider from 'primevue/divider';
 import Trash from '@primeicons/vue/trash';
 import type { CommentData } from '@/types/index.ts';
+import { formatRelativeTime } from '@/utils/time';
 
 const props = defineProps<{
     commentData: CommentData,

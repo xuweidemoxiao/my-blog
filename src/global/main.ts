@@ -35,7 +35,7 @@ export const menuIcon = [
     {
         name: '设置',
         icon: Cog,
-        path: '/settings',
+        path: '/setting',
     },
 ]
     
@@ -74,4 +74,19 @@ export const overviewMenu = [
         darkColor: 'dark:bg-yellow-700',
     },
     
+]
+
+// 天气图标
+export const weatherIcon = [
+    new URL('../assets/svg/weather/sunny-light.svg', import.meta.url).href,
+    new URL('../assets/svg/weather/cloudy-light.svg', import.meta.url).href,
+    new URL('../assets/svg/weather/Overcast-sky.svg', import.meta.url).href,
+    new URL('../assets/svg/weather/foggy.svg', import.meta.url).href,
+    new URL('../assets/svg/weather/small-rain.svg', import.meta.url).href,
+    new URL('../assets/svg/weather/moderate-rain.svg', import.meta.url).href,
+    new URL('../assets/svg/weather/heavy-rain.svg', import.meta.url).href,
+    new URL('../assets/svg/weather/rainstorm.svg', import.meta.url).href,
+    new URL('../assets/svg/weather/thundershower.svg', import.meta.url).href,
+    new URL('../assets/svg/weather/shower-light.svg', import.meta.url).href,
+    new URL('../assets/svg/weather/snowy.svg', import.meta.url).href,
 ]

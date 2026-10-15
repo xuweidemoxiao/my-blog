@@ -1,17 +1,22 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
-import { overviewMenu } from '@/global/overview';
 import Plus from '@primeicons/vue/plus';
-import { Button } from 'primevue';
+import Button from 'primevue/button';
+
+import { ref, onMounted, watch } from 'vue';
+import type { Comments, LineChartData, PieChartData } from '@/types/index.ts';
+import { overviewMenu } from '@/global/main';
 import { lineChartMock, menuMock, pieChartMock, commentMock } from '@/mock/overviewMock';
+
 import LineChart from '@/components/Overview/LineChart.vue';
 import PieChart from '@/components/Overview/PieChart.vue';
 import Comment from '@/components/Overview/Comment.vue';
 import DataCard from '@/components/Overview/DataCard.vue';
-import type { Comments, LineChartData, PieChartData } from '@/types/index.ts';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 
 const overviewItems = ref([...overviewMenu]);
+lineChartMock.data = lineChartMock.data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 const lineChartData = ref<LineChartData>([...lineChartMock.data.slice(0, 7)]);
 const pieDeviceData = ref<PieChartData>([...pieChartMock.data.device]);
 const pieWebsiteData = ref<PieChartData>([...pieChartMock.data.website]);
@@ -26,6 +31,18 @@ const handleTimeChange = (val: string) => {
         lineChartData.value = lineChartMock.data.slice(0, 30);
     }
 }
+
+const handleAdd = (dataKey: string) => {
+    if (dataKey === 'article') {
+        router.push({name: 'articleCreate'});
+    }
+    else if (dataKey === 'gallery') {
+        router.push({name: 'galleryCreate'});
+    }
+    else router.push({name: dataKey});
+}
+
+
 
 const handleSortChange = (val: string) => {
     if (val === 'new') {
@@ -77,7 +94,7 @@ onMounted(() => {
           <div class="text-base">{{ item.name }}</div>
           <div class="text-3xl font-bold">{{ item.total }}</div>
         </div>
-        <Button v-if="index !== 0" iconOnly severity="secondary"><Plus /></Button>
+        <Button v-if="index !== 0" iconOnly severity="secondary" @click="handleAdd(item.dataKey)"><Plus /></Button>
       </div>
     </div>
     <div class="grid grid-cols-2 gap-4 py-4">

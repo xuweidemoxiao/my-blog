@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { menuIcon } from '@/global/overview';
+import { menuIcon } from '@/global/main';
 
 </script>
 
