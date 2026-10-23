@@ -59,7 +59,6 @@ echarts.use([
 
 const props = defineProps<{
     data: LineChartData;
-    chartHeight: string;
 }>()
 
 const option = computed<ECOption>(() => ({
@@ -93,6 +92,7 @@ const option = computed<ECOption>(() => ({
 const chartRef = ref<HTMLDivElement>();
 
 let chartInstance: echarts.ECharts | null = null;
+let resizeObserver: ResizeObserver | null = null;
 
 const resizeChart = () => {
     chartInstance?.resize();
@@ -102,6 +102,11 @@ onMounted(() => {
     chartInstance = echarts.init(chartRef.value);
     chartInstance.setOption(option.value);
     window.addEventListener('resize', resizeChart);
+    // 监听容器自身尺寸变化（如父容器高度被改小），触发 ECharts resize
+    resizeObserver = new ResizeObserver(() => {
+        chartInstance?.resize();
+    });
+    resizeObserver.observe(chartRef.value!);
 })
 
 watch(() => props.data, (newVal) => {
@@ -110,11 +115,12 @@ watch(() => props.data, (newVal) => {
  
 onUnmounted(() => {
     window.removeEventListener('resize', resizeChart);
+    resizeObserver?.disconnect();
 })
 </script>
 
 <template>
-  <div ref="chartRef" class="w-full" :style="{ height: props.chartHeight }"></div>
+  <div ref="chartRef" class="w-full h-full"></div>
 </template>
 
 <style scoped lang="less">

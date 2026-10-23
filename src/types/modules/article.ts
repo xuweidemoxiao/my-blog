@@ -16,7 +16,7 @@ export type Articles = {
         views:number; //查看次数
         state:number; //状态0未发布、1已发布    
         comment:number; //评论数
-        praise:number; //点赞次数
+        like:number; //点赞次数
         content?:string; //内容
     }[];
 }

@@ -4,8 +4,8 @@ import type { GroupData, Messages } from "@/types/index";
 export const useMainStore = defineStore('main', {
     state: () => ({
         groupList: [
-            { id: 0, name: '全部', count: 0, moment: '' },
-            { id: 1, name: '未分类', count: 0, moment: '' },
+            { id: -2, name: '全部', count: 0, moment: '' },
+            { id: -1, name: '未分组', count: 0, moment: '' },     
         ] as GroupData[],
         messageList: {} as Messages,
     }),
@@ -32,7 +32,7 @@ export const useMainStore = defineStore('main', {
 
         // 重命名分组
         renameGroup(id: number, newName: string) {
-            if (id === 0 || id === 1) return; 
+            if (id < 0) return; 
             const group = this.groupList.find(g => g.id === id);
             if (group && newName !== group.name) {
                 group.name = newName.trim();
@@ -41,7 +41,7 @@ export const useMainStore = defineStore('main', {
 
         // 删除分组
         deleteGroup(id: number) {
-            if (id === 0 || id === 1) return; 
+            if (id < 0) return; 
             this.groupList = this.groupList.filter(g => g.id !== id);
         }
     }

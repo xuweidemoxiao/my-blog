@@ -13,7 +13,7 @@ export const fileMock = {
                     url: faker.image.url(),
                     fileName,                                    
                     format: fileName.split('.').pop() ?? '', // 提取后缀
-                    subsetId: faker.number.int({ min: 0, max: 9 }),
+                    subsetId: faker.number.int({ min: -1, max: 8 }),
                 };
             },
             { count }

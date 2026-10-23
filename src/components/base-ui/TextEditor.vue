@@ -9,33 +9,52 @@ import Times from '@primeicons/vue/times';
 import { useToast } from 'primevue/usetoast';
 
 import { ref } from 'vue';
+import { MdEditor } from 'md-editor-v3';
+import type { ToolbarNames } from 'md-editor-v3';
+import 'md-editor-v3/lib/style.css';
 import { labelMock } from '@/mock/articleMock';
 import { groupMock } from '@/mock/mainMock';
 import type { ArticleData, Label } from '@/types/modules/article';
+import type { GalleryData } from '@/types/modules/gallery';
 import AddImage from '../Diary/AddImage.vue';
+import { useThemeStore } from '@/stores/modules/theme';
 
 const toast = useToast();
 const props = withDefaults(defineProps<{
-    type?: string;
+    type?: 'article' | 'gallery';
 }>(), {
     type: 'article',
 })
 
+// 数据由父组件持有，通过 v-model 双向绑定；article 与 gallery 公共字段一致
+const model = defineModel<ArticleData | GalleryData>({ required: true });
+
+const themeStore = useThemeStore();
+
+// 内容框工具栏（精简，仅保留博客常用项）
+const toolbars: ToolbarNames[] = [
+    'bold', 'italic', 'underline', 'strikeThrough', 'title', '-',
+    'unorderedList', 'orderedList', 'task', 'quote', '-',
+    'codeRow', 'code', 'table', 'link', 'image', '-',
+    'mermaid', 'katex', '=', 'revoke', 'next', 'fullscreen'
+];
+
+// 图片上传：后端未就绪，先转 base64 回填；后端图床到位后仅需改这里
+const onUploadImg = (files: File[], callback: (urls: string[]) => void) => {
+    const urls: string[] = [];
+    let done = 0;
+    files.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            urls.push(reader.result as string);
+            if (++done === files.length) callback(urls);
+        };
+        reader.readAsDataURL(file);
+    });
+};
 
 
-const newArticle = ref<ArticleData>({
-  id: 0,
-  title: '',
-  subsetId: -1,
-  moment: '',
-  views: 0,
-  state: 0,
-  comment: 0,
-  praise: 0,
-  content: '',
-  label: [],
-  introduce: '',
-});
+
 const coverFile = ref<File>();
 const labelList = ref(labelMock.data.list);
 const groupList = ref(groupMock.data);
@@ -50,12 +69,12 @@ const toggleLabel = (label: Label) => {
     if (idx !== -1) return selectedLabels.value.splice(idx, 1); // 再次点击删除
     if (selectedLabels.value.length < 5) selectedLabels.value.push(label);
     else toast.add({  severity: 'warn', summary: 'Attention', detail: '最多只能选择5个标签', life: 3000 });
-    newArticle.value.label = selectedLabels.value.map(item => item.name);
+    model.value!.label = selectedLabels.value.map(item => item.name);
 };
 
 const deleteLabel = (labelId: number) => {
     selectedLabels.value = selectedLabels.value.filter(item => item.id !== labelId);
-    newArticle.value.label = selectedLabels.value.map(item => item.name);
+    model.value!.label = selectedLabels.value.map(item => item.name);
 };
 
 const createLabel = () => {
@@ -77,7 +96,7 @@ const createLabel = () => {
         <div class=" p-4 flex flex-col gap-8 flex-1 min-h-0">
             <div class="flex items-center justify-between">
                 <div class="space-y-8">
-                    <InputText v-model="newArticle.title" class="text-2xl!" placeholder="请输入标题..."
+                    <InputText v-model="model.title" class="text-2xl!" placeholder="请输入标题..."
                         :pt="{ 
                             root: { 
                             style: 'padding: 0; border: 0; box-shadow: none; outline: none; background-color: transparent;' 
@@ -85,7 +104,7 @@ const createLabel = () => {
                         }"
                     />
                     <div class="flex items-center flex-wrap gap-4">
-                        <Select v-model="newArticle.subsetId" :options="groupList" optionLabel="name" optionValue="id" placeholder="选择分组" 
+                        <Select v-model="model.subsetId" :options="groupList" optionLabel="name" optionValue="id" placeholder="选择分组" 
                             class=" border-0! bg-transparent! shadow-none! p-0!"  
                             :pt="{ 
                                 label: { style: { padding: '0' } },
@@ -95,7 +114,7 @@ const createLabel = () => {
                             <template #value>
                                 <span class="inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-xs rounded-full py-1 px-3">
                                     <TagIcon />
-                                    <span class="font-semibold">{{ groupList.find(item => item.id === newArticle.subsetId)?.name || '选择分组' }}</span>
+                                    <span class="font-semibold">{{ groupList.find(item => item.id === model.subsetId)?.name || '选择分组' }}</span>
                                 </span>
                             </template>
                         </Select>                  
@@ -113,16 +132,16 @@ const createLabel = () => {
                             </div>
                         </Popover>
                         <TransitionGroup name="tag">
-                            <div v-for="label in selectedLabels" :key="label.id" class="cursor-pointer relative group hover:scale-110 transition-transform" @click="deleteLabel(label.id)">
+                            <div v-for="label in selectedLabels" :key="label.id" class="cursor-pointer relative group hover:scale-110 transition-transform">
                                 <Badge :value="label.name" size="xlarge" severity="secondary" />
-                                <Times class="absolute -top-1 -right-2 cursor-pointer text-gray-400 opacity-0 group-hover:opacity-100 hover:scale-120 transition-opacity" size="12" @click="" />
+                                <Times class="absolute -top-1 -right-2 cursor-pointer text-gray-400 opacity-0 group-hover:opacity-100 hover:scale-120 transition-opacity" size="12" @click="deleteLabel(label.id)" />
                             </div>
                         </TransitionGroup>
                     </div>
                 </div>
                 <AddImage v-if="props.type === 'article'" ref="addImageRef" :max="1" @updateImages="" />
             </div>
-            <Textarea v-if="props.type === 'article'" v-model="newArticle.introduce" class="w-full min-h-0 text-md!" placeholder="请输入简介..."
+            <Textarea v-model="model.introduce" class="w-full min-h-0 text-md!" :placeholder="props.type === 'article' ? '请输入文章简介...' : '请输入相册简介...'"
                 :pt="{ 
                     root: { 
                         style: 'padding: 0; border: 0; box-shadow: none; outline: none; background-color: transparent; resize: none;'
@@ -130,7 +149,18 @@ const createLabel = () => {
                 }"
             />
             <!-- Textarea收缩时靠的是clientHeight比盒子高度少的border高度来重算高度，因此border不能为0 -->
-            <Textarea v-model="newArticle.content" autoResize class="w-full min-h-0 text-lg! p-0! bg-transparent! shadow-none! border-transparent!" placeholder="请输入内容..."/>
+            <MdEditor
+                v-if="props.type === 'article'"
+                v-model="(model as ArticleData).content"
+                :theme="themeStore.isDark ? 'dark' : 'light'"
+                language="zh-CN"
+                placeholder="请输入内容..."
+                :toolbars="toolbars"
+                preview-theme="github"
+                class="flex-1 min-h-0 bg-transparent!"
+                @on-upload-img="onUploadImg"
+            />
+           
         </div>
     </div>
 </template>
@@ -152,5 +182,12 @@ const createLabel = () => {
 }
 .tag-move {
     transition: transform 0.3s ease;
+}
+
+
+// md-editor-v3 编辑区（CodeMirror）自带背景色，需穿透覆盖
+:deep(.md-editor-input-wrapper),
+:deep(.cm-editor) {
+    background-color: transparent !important;
 }
 </style>

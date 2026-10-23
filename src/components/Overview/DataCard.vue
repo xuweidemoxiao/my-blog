@@ -32,14 +32,16 @@ watch(timeValue, (val) => {
 </script>
 
 <template>
-  <div class="p-8 bg-white dark:bg-[#1a1a1a] rounded-xl space-y-4">
-    <div class=" flex justify-between items-center">
+  <div class="p-8 bg-white dark:bg-[#1a1a1a] rounded-xl flex flex-col min-h-0">
+    <div class="flex justify-between items-center shrink-0">
       <div class="text-lg font-bold">{{ title }}</div>
       <div class="flex justify-center">
-        <SelectButton v-model="timeValue" :options="options" optionLabel="label" optionValue="value" aria-labelledby="basic" />
+        <SelectButton v-model="timeValue" :options="options" optionLabel="label" optionValue="value" aria-labelledby="basic" :allow-empty="false" />
       </div>
     </div>
-    <slot></slot>
+    <div class="flex-1 min-h-0 mt-4">
+      <slot></slot>
+    </div>
   </div>
 </template>
 

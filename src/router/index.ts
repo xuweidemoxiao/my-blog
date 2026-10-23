@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useUserStore } from '@/stores/modules/user'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -64,13 +65,55 @@ const router = createRouter({
           component: () => import('../views/ArticleCreate.vue') 
         },
         { 
+          path: 'article/:id', 
+          name: 'articleDetail', 
+          component: () => import('../views/ArticleDetail.vue') 
+        },
+        { 
           path: 'gallery/create', 
           name: 'galleryCreate', 
           component: () => import('../views/GalleryCreate.vue') 
+        },
+        {
+          path: 'gallery/:id', 
+          name: 'galleryDetail', 
+          component: () => import('../views/GalleryDetail.vue') 
+        },
+        {
+          path: 'login',
+          name: 'login',
+          component: () => import('../views/Login.vue'),
+          meta: { public: true },
+        },
+        {
+          path: 'register',
+          name: 'register',
+          component: () => import('../views/Register.vue'),
+          meta: { public: true },
         },
       ]
     }
   ],
 })
+
+// 全局路由守卫：未登录访问受保护页面 → 重定向到登录页，并记录原目标
+router.beforeEach((to) => {
+  const userStore = useUserStore();
+  const isPublic = to.meta.public === true;
+
+  if (!isPublic && !userStore.isLogin) {
+    return {
+      name: 'login',
+      query: to.fullPath !== '/' ? { redirect: to.fullPath } : {},
+    };
+  }
+
+  // 已登录用户访问登录/注册页 → 重定向回首页
+  if (isPublic && userStore.isLogin) {
+    return { path: '/' };
+  }
+
+  return true;
+});
 
 export default router

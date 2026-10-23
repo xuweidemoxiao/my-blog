@@ -134,7 +134,7 @@ const cancelDialog = () => {
                       <Column field="name" header="分组名称">
                           <template #body="{ data }">
                               <InputText 
-                                :disabled="data.id === 0 || data.id === 1 || data.id < 0"
+                                :disabled="data.id < 0"
                                 :value="editingGroup[data.id] ?? data.name" 
                                 class="w-full" 
                                 
@@ -154,7 +154,7 @@ const cancelDialog = () => {
                       </Column>
                       <Column header="操作">
                           <template #body="{ data }">
-                              <Button :disabled="data.id === 0 || data.id === 1 || data.id < 0" class="" size="small" severity="danger" variant="outlined" @click="deleteGroup(data.id)">删除</Button>
+                              <Button :disabled="data.id < 0" class="" size="small" severity="danger" variant="outlined" @click="deleteGroup(data.id)">删除</Button>
                           </template>
                       </Column>
                     </DataTable>

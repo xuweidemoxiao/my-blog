@@ -16,7 +16,7 @@ const fileList = ref<Files['list']>(fileMock.data.list);
 </script>
 
 <template>
-  <div class="px-4 py-2 space-y-4">
+  <div class="space-y-4">
     <div class="flex justify-between items-center">
       <div class="text-xl font-bold">本地文件</div>
       <div class="space-x-4">
@@ -27,7 +27,12 @@ const fileList = ref<Files['list']>(fileMock.data.list);
     <!-- 分组 -->
     <Group>
       <template #panel="{ tabId }">
-        <FilePanel :fileList="fileList.filter(f => f.subsetId === tabId)" />
+        <FilePanel :fileList="fileList.filter(f => {
+          if (tabId === -2) {
+            return true;
+          }
+          return f.subsetId === tabId;
+        })" />
       </template>
     </Group>
   </div>

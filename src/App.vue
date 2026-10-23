@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 import { useMainStore } from './stores/modules/main';
 import { groupMock, messageMock } from './mock/mainMock.ts';
 
 import Toast from 'primevue/toast';
 import ChatBar from './components/base-ui/ChatBar.vue';
-import MenuBar from './components/base-ui/MenuBar.vue';
 import NavBar from './components/base-ui/NavBar.vue';
 
+const route = useRoute();
 const chatBarVisible = ref(false);
+
+// 登录/注册页隐藏顶栏和私信栏
+const isAuthPage = computed(() => route.name === 'login' || route.name === 'register');
 
 onMounted(() => {
   const mainStore = useMainStore();
@@ -19,9 +23,9 @@ onMounted(() => {
 
 <template>
   <div class="min-h-screen flex flex-col bg-sky-50 dark:bg-gray-900">
-    <NavBar class="sticky top-0 z-10" @update:visible="(visible) => chatBarVisible = visible" />
-    <ChatBar v-model:visible="chatBarVisible" />
-    <router-view class="flex-1 px-4 py-4" />
+    <NavBar v-if="!isAuthPage" class="sticky top-0 z-10" @update:visible="(visible) => chatBarVisible = visible" />
+    <ChatBar v-if="!isAuthPage" v-model:visible="chatBarVisible" />
+    <router-view class="flex-1 px-8 py-4" />
     <Toast />
   </div>
   

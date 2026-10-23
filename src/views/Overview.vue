@@ -9,7 +9,7 @@ import { lineChartMock, menuMock, pieChartMock, commentMock } from '@/mock/overv
 
 import LineChart from '@/components/Overview/LineChart.vue';
 import PieChart from '@/components/Overview/PieChart.vue';
-import Comment from '@/components/Overview/Comment.vue';
+import CommentSection from '@/components/base-ui/CommentSection.vue';
 import DataCard from '@/components/Overview/DataCard.vue';
 import { useRouter } from 'vue-router';
 
@@ -40,14 +40,6 @@ const handleAdd = (dataKey: string) => {
         router.push({name: 'galleryCreate'});
     }
     else router.push({name: dataKey});
-}
-
-
-
-const handleSortChange = (val: string) => {
-    if (val === 'new') {
-        commentList.value.list.sort((a, b) => new Date(b.moment).getTime() - new Date(a.moment).getTime())
-    }
 }
 
 let commentCount = 10;
@@ -83,7 +75,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="px-4 py-2">
+  <div class="space-y-4">
     <div class="grid grid-cols-4 gap-4  ">
       <div 
         v-for="(item, index) in overviewItems" 
@@ -97,19 +89,29 @@ onMounted(() => {
         <Button v-if="index !== 0" iconOnly severity="secondary" @click="handleAdd(item.dataKey)"><Plus /></Button>
       </div>
     </div>
-    <div class="grid grid-cols-2 gap-4 py-4">
-      <div class="space-y-4">
-        <DataCard title="访问量" @change="handleTimeChange">
-          <LineChart :data="lineChartData" :chartHeight="'200px'" />
-        </DataCard>
-        <DataCard title="数据监测">
-          <div class="flex justify-between items-center">
-            <PieChart :data="pieDeviceData" :chartHeight="'200px'" :type="'device'" />
-            <PieChart :data="pieWebsiteData" :chartHeight="'200px'" :type="'website'" />
-          </div>        
-        </DataCard>
+    <!-- 高度只在这里定一次：内部图表/评论卡全部自适应，无需再传高度 -->
+    <div class="grid grid-cols-2 grid-rows-2 gap-4 h-148">
+      <!-- 左列第一行：线图 -->
+      <DataCard title="访问量" class="min-h-0" @change="handleTimeChange">
+        <LineChart :data="lineChartData" />
+      </DataCard>
+      <!-- 左列第二行：饼图 -->
+      <DataCard title="数据监测" class="col-start-1 row-start-2 min-h-0">
+        <div class="flex justify-between items-center h-full">
+          <PieChart :data="pieDeviceData" :type="'device'" />
+          <PieChart :data="pieWebsiteData" :type="'website'" />
+        </div>
+      </DataCard>
+      <!-- 右列：评论，跨两行 -->
+      <div class="col-start-2 row-start-1 row-span-2 min-h-0">
+        <CommentSection
+          show-card
+          :comments="commentList.list"
+          :total="commentList.count ?? 0"
+          @reach-bottom="handleReachBottom"
+          @delete="handleDelete"
+        />
       </div>
-      <Comment :commentList="commentList" ref="commentRef" @reachBottom="handleReachBottom" @change="handleSortChange" @delete="handleDelete" />
     </div>
   </div>  
 </template>

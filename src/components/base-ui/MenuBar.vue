@@ -4,24 +4,24 @@ import { menuIcon } from '@/global/main';
 </script>
 
 <template>
-  <div class="flex flex-col px-4 py-2 space-y-4 text-base">
-    <router-link 
+  <nav class="flex flex-col mr-8 space-y-4 text-base">
+    <router-link
       :to="item.path"
-      v-for="item in menuIcon" 
-      :key="item.name" 
-      class="w-40 h-10 flex items-center p-4 rounded-md 
-          bg-gray-100 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700
+      v-for="item in menuIcon"
+      :key="item.name"
+      class="group w-44 h-10 flex items-center px-4 rounded-lg
+          bg-gray-50 dark:bg-gray-800
+          text-gray-600 dark:text-gray-400
+          hover:bg-gray-100 dark:hover:bg-gray-800
+          transition-colors duration-200
       "
+      active-class="!bg-[#3b82f6] !text-white dark:!bg-blue-600"
     >
-      <component :is="item.icon" class="mr-2" size="16" />
-      {{ item.name }}
+      <component :is="item.icon" class="mr-3 shrink-0" size="18" />
+      <span>{{ item.name }}</span>
     </router-link>
-  </div>
+  </nav>
 </template>
 
 <style scoped>
-.router-link-active {
-  background-color: #3b82f6;
-  color: #fff;
-}
 </style>

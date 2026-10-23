@@ -10,3 +10,9 @@ export type {
     Messages,
     MessageData
 } from './modules/main';
+
+export type {
+    UserData,
+    LoginForm,
+    RegisterForm
+} from './modules/user';

@@ -1,8 +1,13 @@
 <template>
     <div class="min-w-0">
         <Transition name="fade" mode="out-in">
-            <div v-if="!manageMode" key="manage-btn" class="text-sm text-muted-color hover:text-color cursor-pointer" @click="manageMode = true">
-                管理
+            <!-- key用来区分元素身份，避免两个div被错误识别为一个元素 -->
+            <div v-if="!manageMode" key="manage-btn" class="flex items-center justify-between">
+                <div class="text-sm text-muted-color hover:text-color cursor-pointer" @click="manageMode = true">
+                    管理
+                </div>
+                <!-- 状态筛选器（进入管理模式时随管理按钮一起隐藏） -->
+                <slot name="actions"></slot>
             </div>
             <div v-else key="manage-bar" class="flex justify-between items-center">
                 <div class="flex items-center text-sm text-muted-color">
@@ -31,8 +36,8 @@
         <Paginator 
             v-model:first="first" 
             v-model:rows="rows" 
-            :totalRecords="props.list.length" 
-            :rowsPerPageOptions="[10, 20, 30]" 
+            :totalRecords="list.length" 
+            :rowsPerPageOptions="[rowsPerPage, rowsPerPage * 2, rowsPerPage * 3]" 
             class="mt-4"
             :dt="{
                 'nav.button.width': '2.5rem',

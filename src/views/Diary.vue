@@ -28,7 +28,7 @@ const manageCheckedArticles = (manageList: Number[], type: 'delete' | 'move') =>
 </script>
 
 <template>
-  <div class="px-4 py-2 space-y-4">
+  <div class="space-y-4">
     <div class="flex justify-between items-center" >
       <div class="text-xl font-bold">随笔随记</div>
       <div class="flex">

@@ -74,7 +74,7 @@ export const commentMock = {
         list: faker.helpers.multiple(
             (_, index) => ({
                 id: index,
-                atricle: {
+                article: {
                     id: faker.number.int({ min: 0, max: 1000 }),
                     title: faker.lorem.sentence({ min: 3, max: 5 }),
                 },
@@ -85,6 +85,7 @@ export const commentMock = {
                 },
                 content: faker.lorem.sentence({ min: 5, max: 10 }),
                 moment: faker.date.recent({ days: 30 }).toISOString().replace('T', ' ').slice(0, 19),
+                like: faker.number.int({ min: 0, max: 100 }),
                 complaint: faker.number.int({ min: 0, max: 20 }),
             }),
             { count: commentCount }

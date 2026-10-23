@@ -22,6 +22,13 @@ watch(_bottom, (val) => {
     _bottom.value = false
   }
 });
+
+// 滚动到顶部（供父组件在内容变化时重置滚动位置）
+const scrollToTop = () => {
+  containerRef.value?.scrollTo({ top: 0 });
+};
+
+defineExpose({ scrollToTop });
 </script>
 
 <style scoped lang="less">

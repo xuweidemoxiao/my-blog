@@ -27,7 +27,7 @@ export const groupMock = {
     code: 200,
     data: faker.helpers.multiple(
         (_, index) => ({
-            id: index + 2,
+            id: index,
             name: faker.word.adjective(),
             count: faker.number.int({ min: 0, max: 100 }),
             moment: faker.date.recent({ days: 30 }).toISOString().replace('T', ' ') .slice(0, 19),

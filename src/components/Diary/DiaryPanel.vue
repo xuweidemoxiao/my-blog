@@ -1,5 +1,5 @@
 <template>
-    <PanelCard type="diary" :rowsPerPage="3" :list="diaryList" @manageList="manageCheckedDiaries"> 
+    <PanelCard type="diary" :rowsPerPage="4" :list="diaryList" @manageList="manageCheckedDiaries"> 
         <template #panelContent="{ toggleCheck, paginatedList, manageMode, checkedItems }">
             <div v-for="diary in paginatedList" :key="diary.id" class="flex items-center py-4 cursor-pointer hover:opacity-75 hover:scale-[1.007] transition-all border-b border-gray-200 dark:border-gray-700">
                 <!-- 选中框 -->
@@ -17,7 +17,7 @@
                         {{ diary.title }}
                         <img :src="weatherIcon[diary.weatherId]" alt="" class="w-6 h-6 inline-block">
                     </span>
-                    <span class="line-clamp-5 text-muted-color">
+                    <span class="line-clamp-3 text-muted-color">
                         {{ diary.content }}
                     </span>
                     <div class="flex items-center justify-between">

@@ -21,7 +21,7 @@ const galleryList = ref<Galleries['list']>(galleryMock.data.list);
 </script>
 
 <template>
-  <div class="px-4 py-2 space-y-4">
+  <div class="space-y-4">
     <div class="flex justify-between items-center">
       <div class="text-xl font-bold">摄影图库</div>
       <div class="space-x-4">
@@ -32,7 +32,12 @@ const galleryList = ref<Galleries['list']>(galleryMock.data.list);
     <!-- 分组 -->
     <Group>
       <template #panel="{ tabId }">
-        <GalleryPanel :galleryList="galleryList.filter(f => f.subsetId === tabId)" />
+        <GalleryPanel :galleryList="galleryList.filter(f => {
+          if (tabId === -2) {
+            return true;
+          }
+          return f.subsetId === tabId;
+        })" />
       </template>
     </Group>
   </div>

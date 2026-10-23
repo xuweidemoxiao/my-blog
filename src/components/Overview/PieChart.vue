@@ -67,7 +67,6 @@ echarts.use([
 
 const props = defineProps<{
     data: PieChartData;
-    chartHeight: string;
     type: string;
 }>()
 
@@ -127,6 +126,7 @@ const isDark = ref(document.documentElement.classList.contains('my-app-dark'));
 let observer: MutationObserver | null = null;
 
 let chartInstance: echarts.ECharts | null = null;
+let resizeObserver: ResizeObserver | null = null;
 
 const resizeChart = () => {
     chartInstance?.resize();
@@ -137,6 +137,13 @@ onMounted(() => {
     chartInstance = echarts.init(chartRef.value);
     chartInstance.setOption(option.value);
     window.addEventListener('resize', resizeChart);
+
+    // 监听容器自身尺寸变化（如父容器高度被改小），触发 ECharts resize
+    resizeObserver = new ResizeObserver(() => {
+        containerWidth.value = chartRef.value?.clientWidth || 0;
+        chartInstance?.resize();
+    });
+    resizeObserver.observe(chartRef.value!);
 
     observer = new MutationObserver(() => {
         isDark.value = document.documentElement.classList.contains('my-app-dark');
@@ -150,12 +157,13 @@ watch(option, (newVal) => {
  
 onUnmounted(() => {
     window.removeEventListener('resize', resizeChart);
+    resizeObserver?.disconnect();
     observer?.disconnect();
 })
 </script>
 
 <template>
-  <div ref="chartRef" class="w-full" :style="{ height: props.chartHeight }"></div>
+  <div ref="chartRef" class="w-full h-full"></div>
 </template>
 
 <style scoped lang="less">

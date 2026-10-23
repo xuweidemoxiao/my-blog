@@ -9,14 +9,12 @@ import Times from '@primeicons/vue/times';
 import InputIcon from 'primevue/inputicon';
 import IconField from 'primevue/iconfield';
 
-import type { GroupData } from '@/types';
 import { ref } from 'vue';
 import type { ArticleData } from '@/types/modules/article';
 import { articleMock } from '@/mock/articleMock';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const extraGroups = ref<GroupData[]>([{id: -1, name: '已发布', count: 0, moment: ''}, {id: -2, name: '未发布', count: 0, moment: ''}]);
 const articleList = ref<ArticleData[]>(articleMock.data.list || []);
 const searchValue = ref('');
 
@@ -31,25 +29,29 @@ const manageCheckedArticles = (manageList: Number[], type: 'delete' | 'move') =>
 </script>
 
 <template>
-  <div class="px-4 py-2 space-y-4">
+  <div class="space-y-4">
     <div class="flex justify-between items-center">
       <div class="text-xl font-bold">博客文章</div>
-      <div class="flex">
+      <div class="flex items-center gap-4">
         <IconField>
-            <InputText v-model="searchValue" class="w-96" placeholder="请输入文章标题..." />
+            <InputText v-model="searchValue" class="w-80" placeholder="请输入文章标题..." />
             <InputIcon v-if="searchValue" class="cursor-pointer" @click="searchValue = ''">
                 <Times />
             </InputIcon>
         </IconField>
-        <Button class="ml-2" severity="contrast">
+        <Button severity="contrast">
             <Search />
         </Button>
+        <Button size="medium" severity="primary" @click="router.push({name: 'articleCreate'});">新建</Button>
       </div>
-      <Button size="medium" severity="primary" @click="router.push({name: 'articleCreate'});">新建</Button>
     </div>
-    <Group :extraGroups="extraGroups">
+    <Group>
         <template #panel="{ tabId }">
-            <ArticlePanel :articleList="articleList.filter(article => article.subsetId === tabId)" @manageList="manageCheckedArticles" />
+            <ArticlePanel :articleList="articleList.filter(article => {
+                // -1=未分类；-2=全部；其他=真实分组：subsetId===tabId
+                if (tabId === -2) return true;
+                return article.subsetId === tabId;
+            })" @manageList="manageCheckedArticles" />
         </template>
         <template #label>
             <Label/>
